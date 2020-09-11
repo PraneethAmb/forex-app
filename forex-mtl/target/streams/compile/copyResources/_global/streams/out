@@ -1,0 +1,3 @@
+[debug] Copy resource mappings: 
+[debug] 	(/home/praneeth/work/paidy/praneeth/forex-app/forex-mtl/src/main/resources/application.conf,/home/praneeth/work/paidy/praneeth/forex-app/forex-mtl/target/scala-2.13/classes/application.conf)
+[debug] 	(/home/praneeth/work/paidy/praneeth/forex-app/forex-mtl/src/main/resources/logback.xml,/home/praneeth/work/paidy/praneeth/forex-app/forex-mtl/target/scala-2.13/classes/logback.xml)

@@ -1,8 +1,11 @@
 package forex.domain
 
-case class Price(value: BigDecimal) extends AnyVal
+import io.estatico.newtype.macros.newtype
 
 object Price {
-  def apply(value: Integer): Price =
-    Price(BigDecimal(value))
+  def apply(price: Int): Price = Price(BigDecimal(price))
+
+  def apply(price: BigDecimal): Price = Price(price)
+
+  @newtype case class Price(value: BigDecimal)
 }

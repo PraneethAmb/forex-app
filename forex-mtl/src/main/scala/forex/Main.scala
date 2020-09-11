@@ -1,28 +1,31 @@
 package forex
 
 import cats.effect._
-import cats.syntax.functor._
+import cats.implicits._
 import forex.config._
-import fs2.Stream
+import forex.services.rates.interpreters.LiveHttpClient
+import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
+import io.chrisdavenport.log4cats.{ Logger, SelfAwareStructuredLogger }
 import org.http4s.server.blaze.BlazeServerBuilder
 
+import scala.concurrent.ExecutionContext.global
+
 object Main extends IOApp {
-
+  implicit val logger: SelfAwareStructuredLogger[IO] = Slf4jLogger.getLogger[IO]
   override def run(args: List[String]): IO[ExitCode] =
-    new Application[IO].stream.compile.drain.as(ExitCode.Success)
-
-}
-
-class Application[F[_]: ConcurrentEffect: Timer] {
-
-  def stream: Stream[F, Unit] =
-    for {
-      config <- Config.stream("app")
-      module = new Module[F](config)
-      _ <- BlazeServerBuilder[F]
-            .bindHttp(config.http.port, config.http.host)
-            .withHttpApp(module.httpApp)
-            .serve
-    } yield ()
-
+    Config[IO].flatMap { cfg =>
+      Logger[IO].info(s"Loaded config settings $cfg") >>
+        ApplicationResources.create[IO](cfg).use { res =>
+          for {
+            httpClient <- LiveHttpClient.create[IO](cfg.oneFrameConfig, res.httpClient)
+            module = new Module[IO](cfg, res.redis, httpClient)
+            _ <- BlazeServerBuilder[IO](global)
+                  .bindHttp(cfg.httpServerConfig.port.value, cfg.httpServerConfig.host.value)
+                  .withHttpApp(module.httpApp)
+                  .serve
+                  .compile
+                  .drain
+          } yield ExitCode.Success
+        }
+    }
 }

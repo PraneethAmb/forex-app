@@ -43,6 +43,18 @@ following are the list of currencies supported
 + SGD
 + USD
 
+## Implementation
+The proxy server is implimented as follows.
+when a request comres from the client,
+* The server checks the local storage last updated time and its status
+
+* if last update time is less than 5 minutes and its status is valid. sever retrieves the exchange rate from the local storage and return to client.
+
++ if last update time is greater than 5 minutes and status is valid, server invalidates the local storage, fetch all currency exchange rates via one request to the one frame api service, and updates the local storage. After which returns the client the requested exchange rate.
+
+* if status in invalid, (which means another node, thread etc... is already updateing the local storage), it waits till the local storage is updated, after which sends the client with the requested exchange rate.
+
+
 ## Simplifications and Assumptions
 * The application uses. http and not https
 * The application uses simple token based authentication. And currently only support the following token (should be set in X-Auth-Regular-User header)

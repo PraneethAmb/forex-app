@@ -27,7 +27,7 @@ sudo sbt run
 ```
 6. After the server has started, you can query echange rates using curl 
 ```
-curl --location --request GET 'http://  localhost:8080/v1/rates?from=USD&to=JPY' \
+curl --location --request GET 'http://localhost:8080/v1/rates?from=USD&to=JPY' \
 --header 'X-Auth-Regular-User: 10dc303535874aeccc86a8251e6992f5'
 ``` 
 ### Supported Currencies

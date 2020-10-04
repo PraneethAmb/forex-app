@@ -1,14 +1,15 @@
 version: '3.4'
-OneFrame:
-  restart: always
-  image: paidyinc/one-frame
-  ports:
-    - "8000:8080"
+services:
+ OneFrame:
+   restart: always
+   image: paidyinc/one-frame
+   ports:
+     - "8000:8080"
 
-Redis:
-  restart: always
-  image: redis
-  ports:
-    - "6379:6379"
-  environment:
-    - DEBUG=false
+ Redis:
+   restart: always
+   image: redis
+   ports:
+     - "6379:6379"
+   environment:
+     - DEBUG=false
